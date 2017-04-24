@@ -9,10 +9,6 @@ import java.util.PriorityQueue;
 
 public class Proof {
 
-	// TODO: Mangler stadig at den kigger tilbage i sine parents og ser om den
-	// har modsætningen til hvad der har været tidligere, hvis den har det kan
-	// den også godt stoppe det.
-
 	static String andOperator = "&";
 	static String orOperator = "|";
 	static String implicationOperator = "->";
@@ -28,8 +24,8 @@ public class Proof {
 		example();
 		ancestor();
 	}
-	
-	public static void onlyOneLiteral(){
+
+	public static void onlyOneLiteral() {
 		System.out.println("---------------------------------");
 		System.out.println("Test for only one literal example:");
 		ArrayList<ArrayList<String>> alpha = new ArrayList<>();
@@ -46,12 +42,13 @@ public class Proof {
 		String[] facts = new String[0];
 
 		new Proof().solve(alpha, KB, facts);
-		
+
 	}
 
 	public static void ancestor() {
 		System.out.println("---------------------------------");
 		System.out.println("Ancestor resolution example:");
+		
 		ArrayList<ArrayList<String>> alpha = new ArrayList<>();
 		ArrayList<String> b = new ArrayList<>();
 		b.add("neg-q");
@@ -237,8 +234,7 @@ public class Proof {
 	/**
 	 * Printing the "route" to the goal
 	 * 
-	 * @param goal
-	 *            / the state reaching the goal
+	 * @param goal (the state reaching the goal)
 	 */
 	public void goalFound(State goal) {
 		if (goal.parent != null) {
@@ -246,7 +242,7 @@ public class Proof {
 		}
 		String result = "";
 		for (String a : goal.alpha) {
-			result += a + ", ";
+			result += a + orOperator;
 		}
 		System.out.println(result + "\t : \t" + goal.action);
 	}
@@ -274,7 +270,6 @@ public class Proof {
 		ArrayList<State> newStates = new ArrayList<>();
 
 		for (String alpha_element : currentState.alpha) {
-
 			for (String fact : facts) {
 				if (alpha_element.contains("neg-")) {
 					String tempSearch = alpha_element.replace("neg-", "");
@@ -289,46 +284,52 @@ public class Proof {
 					newStates.add(s);
 				}
 			}
+		}
 
-			for (String[] kb : KB) {
-				for (String kbb : kb) {
+		for (String[] kb : KB) {
+			int literal = 0;
+			for (String kbb : kb) {
+				for (String alpha_element : currentState.alpha) {
 					if (alpha_element.contains("neg-")) {
 						String tempSearch = alpha_element.replace("neg-", "");
 						if (kbb.contains(tempSearch)) {
-							State s = new State(currentState, addElement(kb, currentState.alpha));
-							s.setAction(getAction(kb));
-							newStates.add(s);
+							literal++;
 						}
 					} else if (kbb.contains("neg-" + alpha_element)) {
-						State s = new State(currentState, addElement(kb, currentState.alpha));
-						s.setAction(getAction(kb));
-						newStates.add(s);
+						literal++;
 					}
 				}
 			}
+			if (literal == 1) {
+				State s = new State(currentState, addElement(kb, currentState.alpha));
+				s.setAction(getAction(kb));
+				newStates.add(s);
+			}
+		}
 
-			// Ancestor Resolution
-			for (ArrayList<String> AR : getAncestorResolution(currentState)) {
-				for (String ar : AR) {
+		// Ancestor Resolution
+		for (ArrayList<String> AR : getAncestorResolution(currentState)) {
+			int literal = 0;
+			for (String ar : AR) {
+				for (String alpha_element : currentState.alpha) {
 					if (alpha_element.contains("neg-")) {
 						String tempSearch = alpha_element.replace("neg-", "");
 						if (ar.contains(tempSearch)) {
-							State s = new State(currentState,
-									addElement(AR.toArray(new String[AR.size()]), currentState.alpha));
-							s.setAction(getAction(AR.toArray(new String[AR.size()])));
-							newStates.add(s);
+							literal++;
 						}
 					} else if (ar.contains("neg-" + alpha_element)) {
-						State s = new State(currentState,
-								addElement(AR.toArray(new String[AR.size()]), currentState.alpha));
-						s.setAction(getAction(AR.toArray(new String[AR.size()])));
-						newStates.add(s);
+						literal++;
 					}
 				}
 			}
-
+			if (literal == 1) {
+				State s = new State(currentState, addElement(AR.toArray(new String[AR.size()]), currentState.alpha));
+				s.setAction(getAction(AR.toArray(new String[AR.size()])));
+				newStates.add(s);
+			}
 		}
 		return newStates;
+
 	}
 
 	public ArrayList<ArrayList<String>> getAncestorResolution(State current) {
