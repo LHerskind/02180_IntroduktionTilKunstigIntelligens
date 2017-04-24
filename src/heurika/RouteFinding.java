@@ -28,22 +28,25 @@ public class RouteFinding {
 	public RouteFinding() {
 		initializeMap();
 
-		Point start = new Point(35, 80); //the corner of SktPedersStraede & Larsbjoernsstraede
-		Point end = new Point(45, 70); //the corner of Studiestraede & Larsbjoernsstraede.
-		
-		// Husk at google får en anden rute da teglgårdsstrædet ikke længere er ensrettet 
+		Point start = new Point(35, 80); // the corner of SktPedersStraede &
+											// Larsbjoernsstraede
+		Point end = new Point(45, 70); // the corner of Studiestraede &
+										// Larsbjoernsstraede.
+
+		// Husk at google får en anden rute da teglgårdsstrædet ikke længere er
+		// ensrettet
 
 		printRoute(start, end);
 	}
 
 	public void printRoute(Point start, Point goal) {
 		State finalState = findRoute(start, goal);
-		
-		if(finalState == null){
+
+		if (finalState == null) {
 			System.out.println("No possible route");
 			return;
 		}
-		
+
 		ArrayList<Point> route = new ArrayList<>();
 
 		while (finalState.parent != null) {
@@ -57,7 +60,7 @@ public class RouteFinding {
 			Point start1 = route.get(i + 1);
 			String roadKey = "" + start1.x + "," + start1.y + ":" + end1.x + "," + end1.y;
 			Road road = roads.get(roadKey);
-			System.out.println(road.getName() + " " +road.getEnd().getX() +","+road.getEnd().getY());
+			System.out.println(road.getName() + " " + road.getEnd().getX() + "," + road.getEnd().getY());
 		}
 
 	}
@@ -67,14 +70,14 @@ public class RouteFinding {
 		addRoad("Vestervoldgade", new Point(20, 50), new Point(10, 70));
 		addRoad("Vestervoldgade", new Point(20, 50), new Point(35, 35));
 		addRoad("Vestervoldgade", new Point(35, 35), new Point(20, 50));
-					
+
 		addRoad("SktPedersStraede", new Point(10, 70), new Point(35, 80));
 		addRoad("SktPedersStraede", new Point(35, 80), new Point(50, 90));
 		addRoad("SktPedersStraede", new Point(65, 100), new Point(50, 90));
-		
+
 		addRoad("Studiestraede", new Point(20, 50), new Point(45, 70));
 		addRoad("Studiestraede", new Point(45, 70), new Point(70, 85));
-		
+
 		addRoad("Noerregade", new Point(60, 150), new Point(65, 110));
 		addRoad("Noerregade", new Point(65, 110), new Point(65, 100));
 		addRoad("Noerregade", new Point(65, 100), new Point(70, 85));
@@ -82,11 +85,11 @@ public class RouteFinding {
 
 		addRoad("Larsbjoernsstraede", new Point(45, 70), new Point(55, 55));
 		addRoad("Larsbjoernsstraede", new Point(45, 70), new Point(35, 80));
-		
+
 		addRoad("TeglgaardsStraede", new Point(25, 100), new Point(35, 80));
 
 		addRoad("LarslejStraede", new Point(50, 90), new Point(35, 120));
-		
+
 		addRoad("Noerrevoldgade", new Point(10, 70), new Point(25, 100));
 		addRoad("Noerrevoldgade", new Point(25, 100), new Point(10, 70));
 		addRoad("Noerrevoldgade", new Point(25, 100), new Point(35, 120));
@@ -165,7 +168,6 @@ public class RouteFinding {
 
 		private int heuristic;
 		private int g;
-		private int gFactor = 0;
 
 		public State(State parent, Intersection intersection) {
 			this.parent = parent;
@@ -173,7 +175,7 @@ public class RouteFinding {
 
 			heuristic = (int) intersection.getPosition().distance(goal);
 			if (parent != null) {
-				g = parent.g + gFactor;
+				g = parent.g + (int) intersection.getPosition().distance(parent.intersection.getPosition());
 			} else {
 				g = 0;
 			}
