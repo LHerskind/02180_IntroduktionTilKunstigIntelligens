@@ -48,7 +48,7 @@ public class Proof {
 	public static void ancestor() {
 		System.out.println("---------------------------------");
 		System.out.println("Ancestor resolution example:");
-		
+
 		ArrayList<ArrayList<String>> alpha = new ArrayList<>();
 		ArrayList<String> b = new ArrayList<>();
 		b.add("neg-q");
@@ -234,7 +234,8 @@ public class Proof {
 	/**
 	 * Printing the "route" to the goal
 	 * 
-	 * @param goal (the state reaching the goal)
+	 * @param goal
+	 *            (the state reaching the goal)
 	 */
 	public void goalFound(State goal) {
 		if (goal.parent != null) {
@@ -273,12 +274,12 @@ public class Proof {
 			for (String fact : facts) {
 				if (alpha_element.contains("neg-")) {
 					String tempSearch = alpha_element.replace("neg-", "");
-					if (fact.contains(tempSearch)) {
+					if (fact.equals(tempSearch)) {
 						State s = new State(currentState, removeOneElement(alpha_element, currentState.alpha));
 						s.setAction(fact);
 						newStates.add(s);
 					}
-				} else if (fact.contains("neg-" + alpha_element)) {
+				} else if (fact.equals("neg-" + alpha_element)) {
 					State s = new State(currentState, removeOneElement(alpha_element, currentState.alpha));
 					s.setAction(fact);
 					newStates.add(s);
@@ -292,10 +293,10 @@ public class Proof {
 				for (String alpha_element : currentState.alpha) {
 					if (alpha_element.contains("neg-")) {
 						String tempSearch = alpha_element.replace("neg-", "");
-						if (kbb.contains(tempSearch)) {
+						if (kbb.equals(tempSearch)) {
 							literal++;
 						}
-					} else if (kbb.contains("neg-" + alpha_element)) {
+					} else if (kbb.equals("neg-" + alpha_element)) {
 						literal++;
 					}
 				}
@@ -307,17 +308,16 @@ public class Proof {
 			}
 		}
 
-		// Ancestor Resolution
 		for (ArrayList<String> AR : getAncestorResolution(currentState)) {
 			int literal = 0;
 			for (String ar : AR) {
 				for (String alpha_element : currentState.alpha) {
 					if (alpha_element.contains("neg-")) {
 						String tempSearch = alpha_element.replace("neg-", "");
-						if (ar.contains(tempSearch)) {
+						if (ar.equals(tempSearch)) {
 							literal++;
 						}
-					} else if (ar.contains("neg-" + alpha_element)) {
+					} else if (ar.equals("neg-" + alpha_element)) {
 						literal++;
 					}
 				}
@@ -328,6 +328,15 @@ public class Proof {
 				newStates.add(s);
 			}
 		}
+		// goalFound(currentState);
+		//
+		// for (State newState : newStates) {
+		// for (String a : newState.alpha) {
+		// System.out.print(a + " | ");
+		// }
+		// System.out.println();
+		// }
+		// System.out.println();
 		return newStates;
 
 	}
@@ -436,7 +445,11 @@ public class Proof {
 		}
 
 		public long getKey() {
-			return alpha.hashCode();
+			long key = alpha.hashCode();
+			if (action != null) {
+				key += action.hashCode();
+			}
+			return key;
 		}
 
 	}
