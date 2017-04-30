@@ -115,6 +115,7 @@ public class RouteFinding {
 		State initialState = new State(null, initial);
 
 		frontier.add(initialState);
+		closed.put(initialState.getKey(), initialState);
 
 		while (!frontier.isEmpty()) {
 
@@ -126,8 +127,9 @@ public class RouteFinding {
 
 			for (Intersection intersection : currentState.intersection.getNeighbours()) {
 				State nextState = new State(currentState, intersection);
-				if (!frontier.contains(nextState)) {
+				if (!closed.containsKey(nextState.getKey())) {
 					frontier.add(nextState);
+					closed.put(nextState.getKey(), nextState);
 				}
 			}
 
@@ -184,7 +186,14 @@ public class RouteFinding {
 		public int priority() {
 			return heuristic + g;
 		}
-
+		public int getKey() {
+			int parentPos = 0;
+			if(parent != null) {
+				parentPos = parent.intersection.getPosition().hashCode();
+			}
+			return intersection.getPosition().hashCode() + parentPos; 
+		}
+		
 		public boolean isGoal() {
 			return intersection.getPosition().distance(goal) == 0;
 		}
