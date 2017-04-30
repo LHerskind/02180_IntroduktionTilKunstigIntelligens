@@ -273,12 +273,12 @@ public class Proof {
 			for (String fact : facts) {
 				if (alpha_element.contains("neg-")) {
 					String tempSearch = alpha_element.replace("neg-", "");
-					if (fact.contains(tempSearch)) {
+					if (fact.equals(tempSearch)) {
 						State s = new State(currentState, removeOneElement(alpha_element, currentState.alpha));
 						s.setAction(fact);
 						newStates.add(s);
 					}
-				} else if (fact.contains("neg-" + alpha_element)) {
+				} else if (fact.equals("neg-" + alpha_element)) {
 					State s = new State(currentState, removeOneElement(alpha_element, currentState.alpha));
 					s.setAction(fact);
 					newStates.add(s);
@@ -292,10 +292,10 @@ public class Proof {
 				for (String alpha_element : currentState.alpha) {
 					if (alpha_element.contains("neg-")) {
 						String tempSearch = alpha_element.replace("neg-", "");
-						if (kbb.contains(tempSearch)) {
+						if (kbb.equals(tempSearch)) {
 							literal++;
 						}
-					} else if (kbb.contains("neg-" + alpha_element)) {
+					} else if (kbb.equals("neg-" + alpha_element)) {
 						literal++;
 					}
 				}
@@ -314,10 +314,10 @@ public class Proof {
 				for (String alpha_element : currentState.alpha) {
 					if (alpha_element.contains("neg-")) {
 						String tempSearch = alpha_element.replace("neg-", "");
-						if (ar.contains(tempSearch)) {
+						if (ar.equals(tempSearch)) {
 							literal++;
 						}
-					} else if (ar.contains("neg-" + alpha_element)) {
+					} else if (ar.equals("neg-" + alpha_element)) {
 						literal++;
 					}
 				}
@@ -436,7 +436,11 @@ public class Proof {
 		}
 
 		public long getKey() {
-			return alpha.hashCode();
+			long key = alpha.hashCode();
+			if(action != null){
+				key += action.hashCode();
+			}			
+			return key;
 		}
 
 	}
