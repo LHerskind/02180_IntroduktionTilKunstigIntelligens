@@ -71,10 +71,13 @@ public class Proof {
 		b.add("neg-Breakfast");
 		alpha.add(b);
 
-		String[][] KB = new String[3][3];
+		String[][] KB = new String[6][4];
 		KB[0] = new String[] { "neg-Hotdrink", "neg-Food", "Breakfast" };
-		KB[1] = new String[] { "Food", "neg-Butter", "neg-Toast" };
-		KB[2] = new String[] { "neg-Tea", "Hotdrink" };
+		KB[1] = new String[] { "neg-Hotdrink", "neg-Food", "neg-Juice", "Breakfast" };
+		KB[2] = new String[] { "Food", "neg-Butter", "neg-Toast" };
+		KB[3] = new String[] { "Food", "neg-Egg"};
+		KB[4] = new String[] { "neg-Tea", "Hotdrink" };
+		KB[5] = new String[] { "neg-Coffee", "neg-Cream", "Hotdrink" };
 
 		String[] facts = new String[] { "Coffee", "Tea", "Toast", "Butter" };
 		new Proof().solve(alpha, KB, facts);
